@@ -44,9 +44,9 @@ const App = () => {
     // コードの変換
     text = text.replace(/`(.+?)`/g, '$1');           // `コード` -> コード
     
-    // リストの変換（* や - や数字.をただのテキストに）
-    text = text.replace(/^[ \t]*[-*+][ \t]+(.+)$/gm, '$1'); // 箇条書き
-    text = text.replace(/^[ \t]*\d+\.[ \t]+(.+)$/gm, '$1'); // 番号付きリスト
+    // リストの変換 - 箇条書きをバレットポイント（•）に変換
+    text = text.replace(/^[ \t]*[-*+][ \t]+(.+)$/gm, '• $1'); // 箇条書き
+    text = text.replace(/^[ \t]*\d+\.[ \t]+(.+)$/gm, '• $1'); // 番号付きリスト
     
     // 水平線を削除
     text = text.replace(/^\s*[-*_]{3,}\s*$/gm, '');
@@ -57,7 +57,7 @@ const App = () => {
     // 画像の変換 ![代替テキスト](URL) -> 代替テキスト
     text = text.replace(/!\[(.+?)\]\(.+?\)/g, '$1');
     
-    // 引用の変換
+    // 引用の変換 - 引用符号を削除するだけ
     text = text.replace(/^>\s+(.+)$/gm, '$1');
     
     // コードブロックの変換
@@ -88,10 +88,12 @@ const App = () => {
               font-family: sans-serif;
               line-height: 1.5;
               margin: 2cm;
+              color: #333;
+              background-color: #fff;
             }
             pre {
               white-space: pre-wrap;
-              font-family: monospace;
+              font-family: sans-serif;
             }
           </style>
         </head>
@@ -121,6 +123,35 @@ const App = () => {
     URL.revokeObjectURL(url);
   };
 
+  // サンプルテキストを読み込む関数
+  const loadSampleText = () => {
+    const sampleMarkdown = `# マインドエンジニアリング・コーチング
+
+## あなたの人生を根本から変える、科学的アプローチ
+
+>「今の現状を超えて、本当にやりたいことを実現したい」
+
+>「努力はしているのに、なぜか前に進まない」
+
+>「何かもっと大きな目標に向かって生きたい」
+
+そんな思いを抱えていませんか？
+
+# マインドエンジニアリング・コーチングとは
+
+マインドエンジニアリング・コーチングは、最新の認知科学的知見を基盤とし、人が本来持つマインドの力を最大限に引き出す実践的プログラムです。
+
+従来の「根性論」や「ポジティブシンキング」とは一線を画した、科学的アプローチであなたの可能性を解放します。
+
+## このコーチングで得られること
+
+* 現状の制約を超えた、真のゴール設定
+* 努力感なく自然にゴールに向かうマインドの獲得
+* あなたが100%やりたいことを明確にする力`;
+    
+    setMarkdown(sampleMarkdown);
+  };
+
   // ファイルアップロード処理
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -143,7 +174,13 @@ const App = () => {
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-lg font-semibold text-gray-700">入力</h2>
-              <div>
+              <div className="flex gap-3">
+                <button 
+                  onClick={loadSampleText}
+                  className="text-sm text-blue-500 cursor-pointer hover:text-blue-600"
+                >
+                  サンプル文章を読み込む
+                </button>
                 <label className="text-sm text-blue-500 cursor-pointer hover:text-blue-600">
                   ファイルをアップロード
                   <input
