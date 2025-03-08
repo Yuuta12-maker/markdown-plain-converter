@@ -23,9 +23,54 @@ const App = () => {
 
   // マークダウンからプレーンテキストへの変換関数
   const convertToPlainText = () => {
-    // 基本的なマークダウン記法をプレーンテキストに変換
-    // ここではインライン記法などは変換せず、そのまま保持
-    setPlainText(markdown);
+    if (!markdown) return;
+    
+    let text = markdown;
+    
+    // 見出しの変換 (# 見出し -> 見出し)
+    text = text.replace(/^#{1,6}\s+(.+)$/gm, '$1');
+    
+    // 太字と斜体の変換
+    text = text.replace(/\*\*\*(.+?)\*\*\*/g, '$1'); // ***太字斜体*** -> 太字斜体
+    text = text.replace(/___(.+?)___/g, '$1');       // ___太字斜体___ -> 太字斜体
+    text = text.replace(/\*\*(.+?)\*\*/g, '$1');     // **太字** -> 太字
+    text = text.replace(/__(.+?)__/g, '$1');         // __太字__ -> 太字
+    text = text.replace(/\*(.+?)\*/g, '$1');         // *斜体* -> 斜体
+    text = text.replace(/_(.+?)_/g, '$1');           // _斜体_ -> 斜体
+    
+    // 取り消し線の変換
+    text = text.replace(/~~(.+?)~~/g, '$1');         // ~~取り消し線~~ -> 取り消し線
+    
+    // コードの変換
+    text = text.replace(/`(.+?)`/g, '$1');           // `コード` -> コード
+    
+    // リストの変換（* や - や数字.をただのテキストに）
+    text = text.replace(/^[ \t]*[-*+][ \t]+(.+)$/gm, '$1'); // 箇条書き
+    text = text.replace(/^[ \t]*\d+\.[ \t]+(.+)$/gm, '$1'); // 番号付きリスト
+    
+    // 水平線を削除
+    text = text.replace(/^\s*[-*_]{3,}\s*$/gm, '');
+    
+    // リンクの変換 [表示テキスト](URL) -> 表示テキスト
+    text = text.replace(/\[(.+?)\]\(.+?\)/g, '$1');
+    
+    // 画像の変換 ![代替テキスト](URL) -> 代替テキスト
+    text = text.replace(/!\[(.+?)\]\(.+?\)/g, '$1');
+    
+    // 引用の変換
+    text = text.replace(/^>\s+(.+)$/gm, '$1');
+    
+    // コードブロックの変換
+    text = text.replace(/```[\s\S]*?```/g, (match) => {
+      // バッククォートを取り除き、最初と最後の行を削除
+      const lines = match.split('\n');
+      return lines.slice(1, -1).join('\n');
+    });
+    
+    // 複数の空行を1つにまとめる
+    text = text.replace(/\n{3,}/g, '\n\n');
+    
+    setPlainText(text);
   };
 
   // 印刷用関数（PDF出力の代替）
