@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/markdown-plain-converter/static/css/main.c1006858.css",
+    "main.js": "/markdown-plain-converter/static/js/main.4d09478b.js",
+    "index.html": "/markdown-plain-converter/index.html",
+    "main.c1006858.css.map": "/markdown-plain-converter/static/css/main.c1006858.css.map",
+    "main.4d09478b.js.map": "/markdown-plain-converter/static/js/main.4d09478b.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c1006858.css",
+    "static/js/main.4d09478b.js"
+  ]
+}
